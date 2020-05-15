@@ -88,3 +88,5 @@ typings/
 .dynamodb/
 
 nats-events/
+
+stream-publish-spam.js
