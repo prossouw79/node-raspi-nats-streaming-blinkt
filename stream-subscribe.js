@@ -25,6 +25,10 @@ if (os.arch() == 'arm') {
     blinkt_leds.clearAll();
     blinkt_available = true;
     var LEDArray = new ledArray(os.hostname(), blinkt_leds)
+
+    //clear all LEDS
+    blinkt_leds.clearAll();
+    blinkt_leds.sendUpdate();
 } else {
     console.warn('Not running on a Raspberry Pi. The chalk library will be used as a fallback.')
 
