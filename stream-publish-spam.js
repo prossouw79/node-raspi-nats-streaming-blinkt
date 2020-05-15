@@ -7,30 +7,22 @@ const _ = require('lodash')
 
 const clusterID = 'test-cluster'
 const clientID = `node-pub-${os.userInfo().username}-${os.hostname()}`
-const server = `nats://${process.env.NATS_HOST}:4222`
+const server = `nats://${process.env.NATS_USER}:${process.env.NATS_PWD}@${process.env.NATS_HOST}:4222`
 const LED = require('./classes/LED.js')
-
-let ledColorsDefined = [
-    new LED("red", 255, 0, 0),
-    new LED("green", 0, 255, 0),
-    new LED("blue", 0, 0, 255),
-    new LED("yellow", 255, 255, 0),
-    new LED("magenta", 255, 0, 255),
-    new LED("cyan", 0, 255, 255),
-    new LED("white", 255, 255, 255)
-]
+const ledColorsDefined = require('./classes/colourBank')
 
 let hostsDefined = [
-    'pi1',
-    'pi2',
-    'pi3'
+    // 'pi1',
+    // 'pi2',
+    // 'pi3',
+    `${os.hostname()}`
 ]
 
 
 const sc = STAN.connect(clusterID, clientID, server)
 sc.on('connect', () => {
     setInterval(() => {
-        const subject = `led-colour-update-${_.sample(hostsDefined)}`
+        const subject = `led-colour-update-${os.userInfo().username}-${_.sample(hostsDefined)}`
         const selectedColor = _.sample(ledColorsDefined)
 
         sc.publish(subject, JSON.stringify(selectedColor), (err, guid) => {
@@ -42,7 +34,7 @@ sc.on('connect', () => {
             }
             // sc.close()
         })
-    }, 5);
+    }, +process.env.SUB_RATELIMIT_DELAY);
 })
 
 sc.on('error', function (reason) {

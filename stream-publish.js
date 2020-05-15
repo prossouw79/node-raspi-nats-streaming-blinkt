@@ -7,18 +7,10 @@ const _ = require('lodash')
 
 const clusterID = 'test-cluster'
 const clientID = `node-pub-${os.userInfo().username}-${os.hostname()}`
-const server = `nats://${process.env.NATS_HOST}:4222`
+const server = `nats://${process.env.NATS_USER}:${process.env.NATS_PWD}@${process.env.NATS_HOST}:4222`
 const LED = require('./classes/LED.js')
+const ledColorsDefined = require('./classes/colourBank')
 
-let ledColorsDefined = [
-    new LED("red", 255, 0, 0),
-    new LED("green", 0, 255, 0),
-    new LED("blue", 0, 0, 255),
-    new LED("yellow", 255, 255, 0),
-    new LED("magenta", 255, 0, 255),
-    new LED("cyan", 0, 255, 255),
-    new LED("white", 255, 255, 255)
-]
 let colourNames = ledColorsDefined.map(l => l.name).concat('random')
 
 let hostsDefined = [
@@ -57,7 +49,7 @@ if(!selectedColor){
     process.exit(1)
 }
 
-const subject = `led-colour-update-${selectedHost}`
+const subject = `led-colour-update-${os.userInfo().username}-${selectedHost}`
 
 const sc = STAN.connect(clusterID, clientID, server)
 sc.on('connect', () => {
