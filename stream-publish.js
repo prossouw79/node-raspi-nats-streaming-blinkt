@@ -6,7 +6,7 @@ const STAN = require('node-nats-streaming')
 const _ = require('lodash')
 
 const clusterID = 'test-cluster'
-const clientID = `node-pub-${os.userInfo().username}-${os.hostname()}`
+const clientID = `node-pub-${os.hostname()}`
 const server = `nats://${process.env.NATS_USER}:${process.env.NATS_PWD}@${process.env.NATS_HOST}:4222`
 const LED = require('./classes/LED.js')
 const ledColorsDefined = require('./classes/colourBank')
@@ -49,7 +49,7 @@ if(!selectedColor){
     process.exit(1)
 }
 
-const subject = `led-colour-update-${os.userInfo().username}-${selectedHost}`
+const subject = `led-colour-update-${selectedHost}`
 
 const sc = STAN.connect(clusterID, clientID, server)
 sc.on('connect', () => {

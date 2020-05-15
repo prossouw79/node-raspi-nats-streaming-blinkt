@@ -8,10 +8,10 @@ const demoOptions = require('./classes/demoOptions')
 //Setup NATS Streaming
 const STAN = require('node-nats-streaming')
 const clusterID = 'test-cluster'
-const clientID = `led-colour-update-${os.userInfo().username}-${os.hostname()}`
+const clientID = `led-colour-update-${os.hostname()}`
 const server = `nats://${process.env.NATS_USER}:${process.env.NATS_PWD}@${process.env.NATS_HOST}:4222`
 const queueGroup = 'node-sub-pieter'
-const subject = `led-colour-update-${os.userInfo().username}-${os.hostname()}`
+const subject = `led-colour-update-${os.hostname()}`
 const stan = STAN.connect(clusterID, clientID, server, {
     maxReconnectAttempts: -1
 });

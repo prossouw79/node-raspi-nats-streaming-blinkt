@@ -6,15 +6,15 @@ const STAN = require('node-nats-streaming')
 const _ = require('lodash')
 
 const clusterID = 'test-cluster'
-const clientID = `node-pub-${os.userInfo().username}-${os.hostname()}`
+const clientID = `node-pub-${os.hostname()}`
 const server = `nats://${process.env.NATS_USER}:${process.env.NATS_PWD}@${process.env.NATS_HOST}:4222`
 const LED = require('./classes/LED.js')
 const ledColorsDefined = require('./classes/colourBank')
 
 let hostsDefined = [
-    // 'pi1',
-    // 'pi2',
-    // 'pi3',
+    'pi1',
+    'pi2',
+    'pi3',
     `${os.hostname()}`
 ]
 
@@ -22,7 +22,7 @@ let hostsDefined = [
 const sc = STAN.connect(clusterID, clientID, server)
 sc.on('connect', () => {
     setInterval(() => {
-        const subject = `led-colour-update-${os.userInfo().username}-${_.sample(hostsDefined)}`
+        const subject = `led-colour-update-${_.sample(hostsDefined)}`
         const selectedColor = _.sample(ledColorsDefined)
 
         sc.publish(subject, JSON.stringify(selectedColor), (err, guid) => {
